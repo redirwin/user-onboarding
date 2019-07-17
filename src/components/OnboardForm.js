@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { withFormik, Form, Field } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import styled from "styled-components";
 import { Button } from "@smooth-ui/core-sc";
+
+import DisplayReturn from "./DisplayReturn";
 
 function OnboardForm({ errors, touched, isSubmitting }) {
   return (
@@ -80,7 +82,12 @@ const FormikForm = withFormik({
       axios
         .post("https://reqres.in/api/users", values)
         .then(res => {
-          console.log(res.data);
+          window.alert(
+            res.data.firstName,
+            res.data.lastName,
+            res.data.email,
+            res.data.password
+          );
           resetForm();
           setSubmitting(false);
         })
