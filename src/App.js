@@ -2,13 +2,13 @@ import React from "react";
 import "./App.scss";
 import { Normalize } from "@smooth-ui/core-sc";
 
-import Form from "./components/Form";
+import OnboardForm from "./components/OnboardForm";
 
 export default function App() {
   return (
     <div className="App">
       <Normalize />
-      <Form />
+      <OnboardForm />
     </div>
   );
 }
