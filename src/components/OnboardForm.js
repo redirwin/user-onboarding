@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { withFormik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { Button } from "@smooth-ui/core-sc";
+import axios from "axios";
 import styled from "styled-components";
+import { Button } from "@smooth-ui/core-sc";
 
-function OnboardForm({ errors, touched }) {
+function OnboardForm({ errors, touched, isSubmitting }) {
+  // const [formData, updateFormData] = useState({});
+
   return (
     <FormContainer>
       <Form>
@@ -15,7 +18,7 @@ function OnboardForm({ errors, touched }) {
           )}
         </div>
         <div>
-          <Field type="text" name="lastName" placeholder="Last Naame" />
+          <Field type="text" name="lastName" placeholder="Last Name" />
           {touched.lastName && errors.lastName && (
             <span>{errors.lastName}</span>
           )}
@@ -34,9 +37,10 @@ function OnboardForm({ errors, touched }) {
           <label>
             <Field type="checkbox" name="tos" />
             <span className="tos">Accept TOS</span>
+            {touched.tos && errors.tos && <span>{errors.tos}</span>}
           </label>
         </div>
-        <Button>Submit</Button>
+        <Button disabled={isSubmitting}>Submit</Button>
       </Form>
     </FormContainer>
   );
@@ -53,7 +57,7 @@ const FormikForm = withFormik({
     };
   },
 
-  //=================== FORM VALIDATION ======================
+  //=================== START FORM VALIDATION ======================
   validationSchema: Yup.object().shape({
     firstName: Yup.string()
       .required("First name is required.")
@@ -70,8 +74,23 @@ const FormikForm = withFormik({
   }),
   //==================== END FORM VALIDATION =================
 
-  handleSubmit(values) {
-    console.log(values);
+  handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
+    if (values.tos === "") {
+      setErrors({ tos: "Please accept the TOS to continue." });
+    } else {
+      console.log("Good input.");
+      axios
+        .post("https://reqres.in/api/users", values)
+        .then(res => {
+          console.log(res.data);
+          resetForm();
+          setSubmitting(false);
+        })
+        .catch(err => {
+          console.log(err);
+          setSubmitting(false);
+        });
+    }
   }
 })(OnboardForm);
 
