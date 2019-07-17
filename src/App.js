@@ -1,8 +1,12 @@
 import React from "react";
 import "./App.scss";
 
-function App() {
-  return <div className="App">App goes here.</div>;
-}
+import Form from "./components/Form";
 
-export default App;
+export default function App() {
+  return (
+    <div className="App">
+      <Form />
+    </div>
+  );
+}
