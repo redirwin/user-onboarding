@@ -82,7 +82,6 @@ const FormikForm = withFormik({
   //==================== END FORM VALIDATION =================
 
   handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
-    // console.log(values);
     axios
       .post("https://reqres.in/api/users", values)
       .then(res => {
@@ -118,11 +117,11 @@ const FormContainer = styled.div`
     input,
     span {
       display: block;
-      width: 100%;
+      width: 95%;
     }
     input {
       margin-top: 1rem;
-      padding: 0.25rem;
+      padding: 0.5rem;
       border: 1px solid grey;
     }
     span {

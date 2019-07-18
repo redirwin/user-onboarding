@@ -5,14 +5,18 @@ import styled from "styled-components";
 import OnboardForm from "./components/OnboardForm";
 
 export default function App() {
-  const [hasAccount, updateHasAccount] = useState(false);
+  const [hasAccount, updateHasAccount] = useState("false");
 
   return (
     <AppContainer className="App">
-      <OnboardForm
-        hasAccount={hasAccount}
-        updateHasAccount={updateHasAccount}
-      />
+      {hasAccount !== "true" ? (
+        <OnboardForm
+          hasAccount={hasAccount}
+          updateHasAccount={updateHasAccount}
+        />
+      ) : (
+        <div>Account already created.</div>
+      )}
     </AppContainer>
   );
 }
