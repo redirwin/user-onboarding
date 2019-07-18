@@ -5,8 +5,6 @@ import axios from "axios";
 import styled from "styled-components";
 import { Button } from "@smooth-ui/core-sc";
 
-import DisplayReturn from "./DisplayReturn";
-
 function OnboardForm({ errors, touched, isSubmitting }) {
   return (
     <FormContainer>
@@ -14,32 +12,38 @@ function OnboardForm({ errors, touched, isSubmitting }) {
         <div>
           <Field type="text" name="firstName" placeholder="First Name" />
           {touched.firstName && errors.firstName && (
-            <span>{errors.firstName}</span>
+            <span className="errors">{errors.firstName}</span>
           )}
         </div>
         <div>
           <Field type="text" name="lastName" placeholder="Last Name" />
           {touched.lastName && errors.lastName && (
-            <span>{errors.lastName}</span>
+            <span className="errors">{errors.lastName}</span>
           )}
         </div>
         <div>
           <Field type="email" name="email" placeholder="Email" />
-          {touched.email && errors.email && <span>{errors.email}</span>}
+          {touched.email && errors.email && (
+            <span className="errors">{errors.email}</span>
+          )}
         </div>
         <div>
           <Field type="password" name="password" placeholder="Password" />
           {touched.password && errors.password && (
-            <span>{errors.password}</span>
+            <span className="errors">{errors.password}</span>
           )}
         </div>
-        <div>
+        <div className="tos">
           <label>
             <Field type="checkbox" name="tos" />
-            <span className="tos">Accept TOS</span>
-            {touched.tos && errors.tos && <span>{errors.tos}</span>}
           </label>
+          <span>I accept the terms of service.</span>
         </div>
+        <p>
+          {touched.tos && errors.tos && (
+            <span className="errors">{errors.tos}</span>
+          )}
+        </p>
         <Button disabled={isSubmitting}>Submit</Button>
       </Form>
     </FormContainer>
@@ -70,62 +74,89 @@ const FormikForm = withFormik({
       .email("Email is not valid."),
     password: Yup.string()
       .required("Password is required.")
-      .min(12, "Password must be at least 12 characters.")
+      .min(8, "Password must be at least 8 characters."),
+    tos: Yup.boolean()
+      .oneOf([true], "Please accept the TOS.")
+      .required("Please accept the TOS.")
   }),
   //==================== END FORM VALIDATION =================
 
   handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
-    if (values.tos === "") {
-      setErrors({ tos: "Please accept the TOS to continue." });
-    } else {
-      console.log("Good input.");
-      axios
-        .post("https://reqres.in/api/users", values)
-        .then(res => {
-          window.alert(
-            res.data.firstName,
-            res.data.lastName,
-            res.data.email,
-            res.data.password
-          );
-          resetForm();
-          setSubmitting(false);
-        })
-        .catch(err => {
-          console.log(err);
-          setSubmitting(false);
-        });
-    }
+    // console.log(values);
+    axios
+      .post("https://reqres.in/api/users", values)
+      .then(res => {
+        alert(JSON.stringify(res.data));
+        resetForm();
+        setSubmitting(false);
+      })
+      .catch(err => {
+        console.log(err);
+        setSubmitting(false);
+      });
   }
 })(OnboardForm);
 
 export default FormikForm;
 
-const FormContainer = styled.form`
+const FormContainer = styled.div`
+  width: 500vw;
+  max-width: 400px;
+  margin: 0 auto;
+
   form {
-    margin: 10vh auto;
+    width: 100%;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
-    width: 20%;
-    text-align: left;
-
-    span,
-    label,
-    button {
-      margin-top: 0.5rem;
+    padding: 2rem;
+    border: 1px solid black;
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    div {
     }
-
-    input {
+    input,
+    span {
+      display: block;
       width: 100%;
     }
-
-    span.tos {
-      margin-left: 0.25rem;
+    input {
+      margin-top: 1rem;
+      padding: 0.25rem;
+      border: 1px solid grey;
     }
+    span {
+      margin-top: 0.25rem;
+      text-align: left;
+    }
+    .tos {
+      display: flex;
+      justify-content: left;
+      align-items: center;
+      align-content: center;
+      margin: 0 0 -1rem 0;
+      padding: 1rem 0 0 0;
 
+      label {
+        width: 5%;
+        display: flex;
+        margin-right: 0.5rem;
+        input {
+          margin-top: 5px;
+        }
+      }
+      p {
+        margin: 0;
+        padding: 0;
+      }
+    }
     button {
-      width: 50%;
+      margin-top: 1rem;
       align-self: flex-end;
+    }
+    .errors {
+      font-size: 0.9rem;
+      color: #a9412d;
     }
   }
 `;
